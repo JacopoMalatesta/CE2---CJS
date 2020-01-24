@@ -98,8 +98,42 @@ dat4 <- tibble(
 
 dat4
 
+# Point 4 ----------------------------------------------------------------------------------------------------------------
+# Scraping the link of "prossimo articolo"
+prossimo_link <- read_html("beppegrillo.html") %>% 
+  html_nodes(".td-post-next-post a") %>% html_attr("href") 
+# Downloading the page of following article
+download.file(prossimo_link,destfile = here::here("downloaded_pages", "prossimo_articolo"))
+# Scraping the text of the article
+articolo <- read_html("prossimo_articolo.html") %>%
+  html_nodes("p:nth-child(5) , p:nth-child(3) , p:nth-child(2) , p:nth-child(1) , .td-pb-padding-side .entry-title") %>% 
+  html_text()
+articolo <- articolo[1:5]
 
+# How to use previous and following links to scrape more post?
+# 1. First, creating a loop to get the previous links and following links. The times of iteration are based on
+# how many previous and following articles you'd like to scrape.
+# For example, we set "http://www.beppegrillo.it/un-mare-di-plastica-ci-sommergera/" as our initial page, and we want to
+# scrape 4 following pages:
+all_prossimo_links <-vector(mode = "character", length = 5)
+dir.create(here::here("downloaded_pages/articles"))
+all_prossimo_links [[1]] <- url
+for (i in 1:4) {
+  all_prossimo_links[[i+1]] <- read_html(all_prossimo_links[i]) %>% html_nodes(".td-post-next-post a") %>% html_attr("href") 
+  Sys.sleep(2)
+}
 
+# 2. Downloading the pages with the links we obtained above and scraping the text 
+article_description <-list()
+for (i in 1:5) {  
+  file_path <- here::here("articles",str_c("article_", i, ".html"))
+  download.file(all_prossimo_link[[i]],destfile =file_path)
+  article_description[[i]] <- read_html(file_path) %>% 
+    html_nodes("p") %>% 
+    html_text() 
+  Sys.sleep(2)
+}  
+# 3. Scraping the previous links and articles is the same, just to replace the css path in the first with ".td-post-next-prev-content a"  
 
 
 
