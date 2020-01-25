@@ -193,7 +193,14 @@ for (i in 1:466) {
     html_text() }
 
 # Point 6--------------------------------------------------------------------------------------------------------------
-# To build a spider scraper
+
+# Crawling means looking at all the content and codes on a page, analyzing and downloading them. This can be done for 
+# different purposes, the main one being web indexing. A web spider is a program that automatically browses and downloads 
+# Web pages by following hyperlinks in a methodical and automated manner. They are usually used for web indexing, but 
+# can also be used for web scraping. 
+
+
+# Building a spider scraper
 # The function we use to build the scraper spider is Rcrawler
 # arguments: 1.Website: to idicate the website
 # 2. Obeyrobots: if TRUE, the crawler will parse the website’s robots.txt file and obey its ruhow many processes will execute the taskles allowed and disallowed directories.
