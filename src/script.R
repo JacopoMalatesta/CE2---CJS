@@ -4,7 +4,7 @@ install.packages("RCurl")
 
 # Loading the packages
 
-library(RCurl); library(rvest); library(tidyverse)
+library(RCurl); library(rvest); library(tidyverse); library(stringr)
 
 # Point 1 -----------------------------------------------------------------------------------------------------------------------
 
@@ -70,7 +70,7 @@ dat2
 
 # Same thing, this time with rvest
 
-links_rvest <- read_html(here::here("beppe_grillo_plastica.html")) %>% 
+links_rvest <- read_html(here::here("downloaded_pages", "beppe_grillo_plastica.html")) %>% 
   html_nodes(css = "a") %>% 
   html_attr("href")
 
