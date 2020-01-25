@@ -192,7 +192,15 @@ for (i in 1:466) {
     html_nodes("p") %>% 
     html_text() }
 
-
+# Point 6--------------------------------------------------------------------------------------------------------------
+# To build a spider scraper
+# The function we use to build the scraper spider is Rcrawler
+# arguments: 1.Website: to idicate the website
+# 2. Obeyrobots: if TRUE, the crawler will parse the website’s robots.txt file and obey its ruhow many processes will execute the taskles allowed and disallowed directories.
+# 3. ExtractCSSPat: to extract one element per pattern for every page
+# 4. ManyPerPattern: to extract multiple elements per pattern, we need to set ManyPerPattern = T
+# 5. no_cores: specify how many processes will execute the task
+# 6. no_conn: specify how many HTTP requests will be sent simultaneously (in parallel).
 
 
 
