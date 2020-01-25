@@ -116,14 +116,14 @@ articolo <- articolo[1:5]
 # For example, we set "http://www.beppegrillo.it/un-mare-di-plastica-ci-sommergera/" as our initial page, and we want to
 # scrape 4 following pages:
 all_prossimo_links <-vector(mode = "character", length = 5)
-dir.create(here::here("downloaded_pages/articles"))
+dir.create(here::here("downloaded_pages/prossimo articolo"))
 all_prossimo_links [[1]] <- url
 for (i in 1:4) {
   all_prossimo_links[[i+1]] <- read_html(all_prossimo_links[i]) %>% html_nodes(".td-post-next-post a") %>% html_attr("href") 
   Sys.sleep(2)
 }
 
-# 2. Downloading the pages with the links we obtained above and scraping the text 
+# 2. Downloading the pages and scraping the text 
 article_description <-list()
 for (i in 1:5) {  
   file_path <- here::here("articles",str_c("article_", i, ".html"))
@@ -134,6 +134,64 @@ for (i in 1:5) {
   Sys.sleep(2)
 }  
 # 3. Scraping the previous links and articles is the same, just to replace the css path in the first with ".td-post-next-prev-content a"  
+
+# Point 5---------------------------------------------------------------------------------------------------------------
+# 1. Getting the links of 47 pages 
+archivepages <-list()
+url2016 <- "https://www.beppegrillo.it/category/archivio/2016/"
+archivepages[[1]] <- url2016
+for (i in 1:46) {
+  archivepages[[i+1]] <- read_html(archivepages[[i]]) %>% html_nodes(".last+ a") %>% html_attr("href") 
+  Sys.sleep(2)
+}
+# The css path of "next page" on the 46th page is different, so we scrape the link of the 47th page alone
+archivepages[[47]] <- read_html(archivepages[[46]]) %>% html_nodes(".page+ a") %>% html_attr("href")
+
+# 2. Getting all the articles links on 47 pages
+articlelinks <- list()
+for (i in 1:47) {
+  articlelinks[(1+(i-1)*10):(i*10)] <- read_html(archivepages[[i]]) %>%
+    html_nodes(".td_module_10 .td-module-title a") %>% html_attr("href") 
+  Sys.sleep(2)
+}
+articlelinks[[470]] <- NULL
+
+# 3. Downloading all the article pages
+dir.create(here::here("downloaded_pages/articles"))
+for (i in 1:149) {
+  cat("Iteration:", i)
+  filepath2 <- here::here("articles",str_c("page_", i, ".html"))
+  download.file(articlelinks[[i]], filepath2)
+  Sys.sleep(2) }
+articlelinks[[150]] <- NULL
+for (i in 150:212) {
+  cat("Iteration:", i)
+  filepath2 <- here::here("articles",str_c("page_", i, ".html"))
+  download.file(articlelinks[[i]], filepath2)
+  Sys.sleep(2) }
+articlelinks[[213]] <- NULL
+for (i in 213:419) {
+  cat("Iteration:", i)
+  filepath2 <- here::here("articles",str_c("page_", i, ".html"))
+  download.file(articlelinks[[i]], filepath2)
+  Sys.sleep(2) }
+articlelinks[[420]] <- NULL
+for (i in 420:466) {
+  cat("Iteration:", i)
+  filepath2 <- here::here("articles",str_c("page_", i, ".html"))
+  download.file(articlelinks[[i]], filepath2)
+  Sys.sleep(2) }
+
+# 4.scraping the text
+text <- list()
+
+for (i in 1:466) {
+  cat("Iteration:", i)
+  filepath3 <- here::here("articles",str_c("page_", i, ".html"))
+  text[[i]] <- read_html(filepath3) %>%
+    html_nodes("p") %>% 
+    html_text() }
+
 
 
 
