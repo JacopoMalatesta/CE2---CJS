@@ -79,8 +79,7 @@ Creating a tibble to store all the links
 dat <- tibble(
   links = links
 )
-
-head(dat)
+dat
 
 ```
 
@@ -98,7 +97,7 @@ dat2 <- tibble(
   links = internal_links
 )
 
-head(dat2)
+dat2
 
 ```
 
@@ -120,7 +119,7 @@ dat3 <- tibble(
   links = links_rvest
 )
 
-head(dat3)
+dat3
 
 ```
 
@@ -139,7 +138,7 @@ dat4 <- tibble(
   links = internal_links_rvest
 )
 
-head(dat4)
+dat4
 ```
 
 
@@ -231,33 +230,39 @@ head(articlelinks)
 ### 3. Downloading all the article pages
 ```{r}
 dir.create(here::here("downloaded_pages/articles"))
-for (i in 1:149) {
+for (i in 55:149) {
   cat("Iteration:", i,"\n")
   filepath2 <- here::here("downloaded_pages/articles",str_c("page_", i, ".html"))
   download.file(articlelinks[[i]], filepath2)
   Sys.sleep(2) }
 
 articlelinks[[150]] <- NULL
+```
 
-for (i in 150:212) {
+```{r}
+for (i in 150:211) {
   cat("Iteration:", i,"\n")
   filepath2 <- here::here("downloaded_pages/articles",str_c("page_", i, ".html"))
   download.file(articlelinks[[i]], filepath2)
   Sys.sleep(2) }
 
-articlelinks[[213]] <- NULL
+articlelinks[[212]] <- NULL
+```
 
-for (i in 213:419) {
+```{r}
+for (i in 212:417) {
   cat("Iteration:", i,"\n")
-  filepath2 <- here::here("articles",str_c("page_", i, ".html"))
+  filepath2 <- here::here("downloaded_pages/articles",str_c("page_", i, ".html"))
   download.file(articlelinks[[i]], filepath2)
   Sys.sleep(2) }
 
-articlelinks[[420]] <- NULL
+articlelinks[[418]] <- NULL
+```
 
-for (i in 420:466) {
+```{r}
+for (i in 418:466) {
   cat("Iteration:", i,"\n")
-  filepath2 <- here::here("articles",str_c("page_", i, ".html"))
+  filepath2 <- here::here("downloaded_pages/articles",str_c("page_", i, ".html"))
   download.file(articlelinks[[i]], filepath2)
   Sys.sleep(2) }
 ```
@@ -268,7 +273,7 @@ for (i in 420:466) {
 text <- list()
 for (i in 1:466) {
   cat("Iteration:", i,"\n")
-  filepath3 <- here::here("articles",str_c("page_", i, ".html"))
+  filepath3 <- here::here("downloaded_pages/articles",str_c("page_", i, ".html"))
   text[[i]] <- read_html(filepath3) %>%
     html_nodes("p") %>% 
     html_text() }
