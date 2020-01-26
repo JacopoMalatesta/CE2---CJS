@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 
 <meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -234,7 +235,7 @@ a.sourceLine { text-indent: -1em; padding-left: 1em; }
 pre.numberSource a.sourceLine
   { position: relative; left: -4em; }
 pre.numberSource a.sourceLine::before
-  { content: attr(title);
+  { content: attr(data-line-number);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
     border: none; pointer-events: all; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
@@ -411,7 +412,6 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
-  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -455,79 +455,210 @@ summary {
 <li><a href="#point-1">Point 1</a></li>
 <li><a href="#point-2">Point 2</a></li>
 <li><a href="#point-3">Point 3</a></li>
-<li><a href="#point-6">Point 6</a></li>
+<li><a href="#point-4">Point 4</a><ul>
+<li><a href="#how-to-use-previous-and-following-links-to-scrape-more-post">How to use previous and following links to scrape more post?</a></li>
+</ul></li>
+<li><a href="#point-5">Point 5</a><ul>
+<li><a href="#getting-the-links-of-47-pages">1. Getting the links of 47 pages</a></li>
+<li><a href="#getting-all-the-articles-links-on-47-pages">2. Getting all the articles links on 47 pages</a></li>
+<li><a href="#downloading-all-the-article-pages">3. Downloading all the article pages</a></li>
+<li><a href="#scraping-the-text">4.Scraping the text</a></li>
+</ul></li>
+<li><a href="#point-6">Point 6</a><ul>
+<li><a href="#what-is-crawling">What is crawling?</a></li>
+<li><a href="#building-a-spider-scraper">Building a spider scraper</a></li>
+</ul></li>
 </ul>
 </div>
 
 <div id="loading-the-packages" class="section level2">
 <h2>Loading the packages</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(RCurl); <span class="kw">library</span>(rvest); <span class="kw">library</span>(tidyverse); <span class="kw">library</span>(stringr)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(RCurl); <span class="kw">library</span>(rvest); <span class="kw">library</span>(tidyverse); <span class="kw">library</span>(stringr)</a></code></pre></div>
 </div>
 <div id="point-1" class="section level2">
 <h2>Point 1</h2>
 <p>Inspecting the robots.txt file</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">browseURL</span>(<span class="st">&quot;http://beppegrillo.it/robots.txt&quot;</span>) </a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">browseURL</span>(<span class="st">&quot;http://beppegrillo.it/robots.txt&quot;</span>) </a></code></pre></div>
 <p>The first line we read says: &quot;User-agent: *&quot;. This simply means that the following instructions apply to all robots.</p>
 <p>The following two lines are “Disallow: /wp-admin/” and “Allow: /wp-admin/admin-ajax.php”. They are telling us that the site is blocking the wp-admin folder with the exception of the admin-ajax.php file. In other words, we are not allowed to download any page from that folder with the exception of the admin-ajax.php file.</p>
 </div>
 <div id="point-2" class="section level2">
 <h2>Point 2</h2>
 <p>Storing our URL link into an object called url</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">url &lt;-<span class="st"> &quot;http://www.beppegrillo.it/un-mare-di-plastica-ci-sommergera/&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">url &lt;-<span class="st"> &quot;http://www.beppegrillo.it/un-mare-di-plastica-ci-sommergera/&quot;</span></a></code></pre></div>
 <p>Downloading the page using RCcurl::getURL() while informing the webmaster about my browser details and my e-mail address.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">page &lt;-<span class="st"> </span><span class="kw">getURL</span>(url, </a>
-<a class="sourceLine" id="cb4-2" title="2">               <span class="dt">useragent =</span> <span class="kw">str_c</span>(R.version<span class="op">$</span>platform,</a>
-<a class="sourceLine" id="cb4-3" title="3">                                 R.version<span class="op">$</span>version.string,</a>
-<a class="sourceLine" id="cb4-4" title="4">                                 <span class="dt">sep =</span> <span class="st">&quot;, &quot;</span>),</a>
-<a class="sourceLine" id="cb4-5" title="5">               <span class="dt">httpheader =</span> <span class="kw">c</span>(<span class="dt">From =</span> <span class="st">&quot;jacopomalatesta95@gmail.com&quot;</span>)) </a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">page &lt;-<span class="st"> </span><span class="kw">getURL</span>(url, </a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">               <span class="dt">useragent =</span> <span class="kw">str_c</span>(R.version<span class="op">$</span>platform,</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">                                 R.version<span class="op">$</span>version.string,</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">                                 <span class="dt">sep =</span> <span class="st">&quot;, &quot;</span>),</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">               <span class="dt">httpheader =</span> <span class="kw">c</span>(<span class="dt">From =</span> <span class="st">&quot;jacopomalatesta95@gmail.com&quot;</span>)) </a></code></pre></div>
 <p>Saving the page in my directory</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">writeLines</span>(page, </a>
-<a class="sourceLine" id="cb5-2" title="2">           <span class="dt">con =</span> here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;downloaded_pages&quot;</span>, <span class="st">&quot;beppe_grillo_plastica.html&quot;</span>)) </a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">writeLines</span>(page, </a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">           <span class="dt">con =</span> here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;downloaded_pages&quot;</span>, <span class="st">&quot;beppe_grillo_plastica.html&quot;</span>)) </a></code></pre></div>
 </div>
 <div id="point-3" class="section level2">
 <h2>Point 3</h2>
 <p>Downloading all the links in the page</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">links &lt;-<span class="st"> </span>XML<span class="op">::</span><span class="kw">getHTMLLinks</span>(url)</a>
-<a class="sourceLine" id="cb6-2" title="2">links</a></code></pre></div>
-<p>Creating a tibble with all the links</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">dat &lt;-<span class="st"> </span><span class="kw">tibble</span>(</a>
-<a class="sourceLine" id="cb7-2" title="2">  <span class="dt">links =</span> links</a>
-<a class="sourceLine" id="cb7-3" title="3">)</a>
-<a class="sourceLine" id="cb7-4" title="4"></a>
-<a class="sourceLine" id="cb7-5" title="5">dat</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">links &lt;-<span class="st"> </span>XML<span class="op">::</span><span class="kw">getHTMLLinks</span>( here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;downloaded_pages&quot;</span>,<span class="st">&quot;beppe_grillo_plastica.html&quot;</span>))</a></code></pre></div>
+<p>Creating a tibble to store all the links</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">dat &lt;-<span class="st"> </span><span class="kw">tibble</span>(</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">  <span class="dt">links =</span> links</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">)</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">dat</a></code></pre></div>
 <p>Selecting all the links re-directing to other posts from the beppegrillo.it blog</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">internal_links &lt;-<span class="st"> </span><span class="kw">str_subset</span>(links, <span class="st">&quot;^http://www</span><span class="ch">\\</span><span class="st">.beppegrillo</span><span class="ch">\\</span><span class="st">.it&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">internal_links &lt;-<span class="st"> </span><span class="kw">str_subset</span>(links, <span class="st">&quot;^http://www</span><span class="ch">\\</span><span class="st">.beppegrillo</span><span class="ch">\\</span><span class="st">.it&quot;</span>)</a></code></pre></div>
 <p>Creating a tibble with all the links re-directing to other posts from the beppegrillo.it blog</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">dat2 &lt;-<span class="st"> </span><span class="kw">tibble</span>(</a>
-<a class="sourceLine" id="cb9-2" title="2">  <span class="dt">links =</span> internal_links</a>
-<a class="sourceLine" id="cb9-3" title="3">)</a>
-<a class="sourceLine" id="cb9-4" title="4"></a>
-<a class="sourceLine" id="cb9-5" title="5">dat2</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">dat2 &lt;-<span class="st"> </span><span class="kw">tibble</span>(</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">  <span class="dt">links =</span> internal_links</a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">)</a>
+<a class="sourceLine" id="cb9-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb9-5" data-line-number="5">dat2</a></code></pre></div>
 <p>Same thing, this time with rvest</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">links_rvest &lt;-<span class="st"> </span><span class="kw">read_html</span>(here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;downloaded_pages&quot;</span>, <span class="st">&quot;beppe_grillo_plastica.html&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb10-2" title="2"><span class="st">  </span><span class="kw">html_nodes</span>(<span class="dt">css =</span> <span class="st">&quot;a&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb10-3" title="3"><span class="st">  </span><span class="kw">html_attr</span>(<span class="st">&quot;href&quot;</span>)</a>
-<a class="sourceLine" id="cb10-4" title="4"></a>
-<a class="sourceLine" id="cb10-5" title="5">links_rvest</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">links_rvest &lt;-<span class="st"> </span><span class="kw">read_html</span>(here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;downloaded_pages&quot;</span>, <span class="st">&quot;beppe_grillo_plastica.html&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="st">  </span><span class="kw">html_nodes</span>(<span class="dt">css =</span> <span class="st">&quot;a&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="st">  </span><span class="kw">html_attr</span>(<span class="st">&quot;href&quot;</span>)</a></code></pre></div>
 <p>Creating a dataframe containing the links</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">dat3 &lt;-<span class="st"> </span><span class="kw">tibble</span>(</a>
-<a class="sourceLine" id="cb11-2" title="2">  <span class="dt">links =</span> links_rvest</a>
-<a class="sourceLine" id="cb11-3" title="3">)</a>
-<a class="sourceLine" id="cb11-4" title="4"></a>
-<a class="sourceLine" id="cb11-5" title="5">dat3</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">dat3 &lt;-<span class="st"> </span><span class="kw">tibble</span>(</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">  <span class="dt">links =</span> links_rvest</a>
+<a class="sourceLine" id="cb11-3" data-line-number="3">)</a>
+<a class="sourceLine" id="cb11-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb11-5" data-line-number="5">dat3</a></code></pre></div>
 <p>Selecting all the links re-directing to other posts from the beppegrillo.it blog</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">internal_links_rvest &lt;-<span class="st"> </span><span class="kw">str_subset</span>(links, <span class="st">&quot;^http://www</span><span class="ch">\\</span><span class="st">.beppegrillo</span><span class="ch">\\</span><span class="st">.it&quot;</span>)</a>
-<a class="sourceLine" id="cb12-2" title="2">internal_links_rvest</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">internal_links_rvest &lt;-<span class="st"> </span><span class="kw">str_subset</span>(links, <span class="st">&quot;^http://www</span><span class="ch">\\</span><span class="st">.beppegrillo</span><span class="ch">\\</span><span class="st">.it&quot;</span>)</a></code></pre></div>
 <p>Creating a dataframe containing the links re-directing to other posts from the beppegrillo.it blog</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1">dat4 &lt;-<span class="st"> </span><span class="kw">tibble</span>(</a>
-<a class="sourceLine" id="cb13-2" title="2">  <span class="dt">links =</span> internal_links_rvest</a>
-<a class="sourceLine" id="cb13-3" title="3">)</a>
-<a class="sourceLine" id="cb13-4" title="4"></a>
-<a class="sourceLine" id="cb13-5" title="5">dat4</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">dat4 &lt;-<span class="st"> </span><span class="kw">tibble</span>(</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">  <span class="dt">links =</span> internal_links_rvest</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">)</a>
+<a class="sourceLine" id="cb13-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb13-5" data-line-number="5">dat4</a></code></pre></div>
+</div>
+<div id="point-4" class="section level2">
+<h2>Point 4</h2>
+<p>Scraping the link of “prossimo articolo”</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">prossimo_link &lt;-<span class="st"> </span><span class="kw">read_html</span>(here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;downloaded_pages&quot;</span>, <span class="st">&quot;beppe_grillo_plastica.html&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb14-2" data-line-number="2"><span class="st">  </span><span class="kw">html_nodes</span>(<span class="st">&quot;.td-post-next-post a&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">html_attr</span>(<span class="st">&quot;href&quot;</span>)</a>
+<a class="sourceLine" id="cb14-3" data-line-number="3">prossimo_link</a></code></pre></div>
+<p>Downloading the page of following article</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw">download.file</span>(prossimo_link,<span class="dt">destfile =</span> here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;downloaded_pages&quot;</span>, <span class="st">&quot;prossimo_articolo.html&quot;</span>))</a></code></pre></div>
+<p>Scraping the text of the article</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">articolo &lt;-<span class="st"> </span><span class="kw">read_html</span>(here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;downloaded_pages&quot;</span>,<span class="st">&quot;prossimo_articolo.html&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb16-2" data-line-number="2"><span class="st">  </span><span class="kw">html_nodes</span>(<span class="st">&quot;p:nth-child(5) , p:nth-child(3) , p:nth-child(2) , p:nth-child(1) , .td-pb-padding-side .entry-title&quot;</span>) <span class="op">%&gt;%</span><span class="st">   </span><span class="kw">html_text</span>()</a>
+<a class="sourceLine" id="cb16-3" data-line-number="3">articolo &lt;-<span class="st"> </span>articolo[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a>
+<a class="sourceLine" id="cb16-4" data-line-number="4">articolo</a></code></pre></div>
+<div id="how-to-use-previous-and-following-links-to-scrape-more-post" class="section level3">
+<h3>How to use previous and following links to scrape more post?</h3>
+<ol style="list-style-type: decimal">
+<li>First, creating a loop to get the previous links and following links. The times of iteration are based on how many previous and following articles you’d like to scrape. For example, we set “<a href="http://www.beppegrillo.it/un-mare-di-plastica-ci-sommergera/" class="uri">http://www.beppegrillo.it/un-mare-di-plastica-ci-sommergera/</a>” as our initial page, and we want to scrape 4 following pages:</li>
+</ol>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">all_prossimo_links &lt;-<span class="kw">vector</span>(<span class="dt">mode =</span> <span class="st">&quot;character&quot;</span>, <span class="dt">length =</span> <span class="dv">5</span>)    </a>
+<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw">dir.create</span>(here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;downloaded_pages/prossimo articolo&quot;</span>))    </a>
+<a class="sourceLine" id="cb17-3" data-line-number="3">all_prossimo_links [[<span class="dv">1</span>]] &lt;-<span class="st"> &quot;http://www.beppegrillo.it/un-mare-di-plastica-ci-sommergera/&quot;</span>      </a>
+<a class="sourceLine" id="cb17-4" data-line-number="4"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>) {   </a>
+<a class="sourceLine" id="cb17-5" data-line-number="5">  all_prossimo_links[[i<span class="op">+</span><span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw">read_html</span>(all_prossimo_links[i]) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">html_nodes</span>(<span class="st">&quot;.td-post-next-post a&quot;</span>) <span class="op">%&gt;%</span><span class="st">     </span><span class="kw">html_attr</span>(<span class="st">&quot;href&quot;</span>)     </a>
+<a class="sourceLine" id="cb17-6" data-line-number="6">  <span class="kw">Sys.sleep</span>(<span class="dv">2</span>)    </a>
+<a class="sourceLine" id="cb17-7" data-line-number="7">}    </a></code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>Downloading the pages and scraping the text</li>
+</ol>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">article_description &lt;-<span class="kw">list</span>()    </a>
+<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>) {       </a>
+<a class="sourceLine" id="cb18-3" data-line-number="3">  file_path &lt;-<span class="st"> </span>here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;downloaded_pages/prossimo articolo&quot;</span>,<span class="kw">str_c</span>(<span class="st">&quot;article_&quot;</span>, i, <span class="st">&quot;.html&quot;</span>))       </a>
+<a class="sourceLine" id="cb18-4" data-line-number="4">  <span class="kw">download.file</span>(all_prossimo_link[[i]],<span class="dt">destfile =</span>file_path)     </a>
+<a class="sourceLine" id="cb18-5" data-line-number="5">  article_description[[i]] &lt;-<span class="st"> </span><span class="kw">read_html</span>(file_path) <span class="op">%&gt;%</span><span class="st">       </span></a>
+<a class="sourceLine" id="cb18-6" data-line-number="6"><span class="st">    </span><span class="kw">html_nodes</span>(<span class="st">&quot;p&quot;</span>) <span class="op">%&gt;%</span><span class="st">           </span></a>
+<a class="sourceLine" id="cb18-7" data-line-number="7"><span class="st">    </span><span class="kw">html_text</span>()         </a>
+<a class="sourceLine" id="cb18-8" data-line-number="8">  <span class="kw">Sys.sleep</span>(<span class="dv">2</span>)       </a>
+<a class="sourceLine" id="cb18-9" data-line-number="9">}       </a></code></pre></div>
+<ol start="3" style="list-style-type: decimal">
+<li>Scraping the previous links and articles is the same, just to replace the css path in the first with “.td-post-next-prev-content a”</li>
+</ol>
+</div>
+</div>
+<div id="point-5" class="section level2">
+<h2>Point 5</h2>
+<div id="getting-the-links-of-47-pages" class="section level3">
+<h3>1. Getting the links of 47 pages</h3>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1">archivepages &lt;-<span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb19-2" data-line-number="2">url2016 &lt;-<span class="st"> &quot;https://www.beppegrillo.it/category/archivio/2016/&quot;</span></a>
+<a class="sourceLine" id="cb19-3" data-line-number="3">archivepages[[<span class="dv">1</span>]] &lt;-<span class="st"> </span>url2016</a>
+<a class="sourceLine" id="cb19-4" data-line-number="4"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">45</span>) {</a>
+<a class="sourceLine" id="cb19-5" data-line-number="5">  <span class="kw">cat</span>(<span class="st">&quot;iteration_&quot;</span>,i,<span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</a>
+<a class="sourceLine" id="cb19-6" data-line-number="6">  archivepages[[i<span class="op">+</span><span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw">read_html</span>(archivepages[[i]]) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">html_nodes</span>(<span class="st">&quot;.last+ a&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">html_attr</span>(<span class="st">&quot;href&quot;</span>) </a>
+<a class="sourceLine" id="cb19-7" data-line-number="7">  <span class="kw">Sys.sleep</span>(<span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb19-8" data-line-number="8">}</a></code></pre></div>
+<p>The css path of “next page” on the 46th page is different, so archivepages[[47]] is empty, we repalce it with the right URL</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">archivepages[[<span class="dv">47</span>]] &lt;-<span class="st"> &quot;https://www.beppegrillo.it/category/archivio/2016/page/47/&quot;</span></a></code></pre></div>
+</div>
+<div id="getting-all-the-articles-links-on-47-pages" class="section level3">
+<h3>2. Getting all the articles links on 47 pages</h3>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">articlelinks &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">46</span>) {</a>
+<a class="sourceLine" id="cb21-3" data-line-number="3">  <span class="kw">cat</span>(<span class="st">&quot;iteration_&quot;</span>,i)</a>
+<a class="sourceLine" id="cb21-4" data-line-number="4">  articlelinks[(<span class="dv">1</span><span class="op">+</span>(i<span class="dv">-1</span>)<span class="op">*</span><span class="dv">10</span>)<span class="op">:</span>(i<span class="op">*</span><span class="dv">10</span>)] &lt;-<span class="st"> </span><span class="kw">read_html</span>(archivepages[[i]]) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb21-5" data-line-number="5"><span class="st">    </span><span class="kw">html_nodes</span>(<span class="st">&quot;.td_module_10 .td-module-title a&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">html_attr</span>(<span class="st">&quot;href&quot;</span>) </a>
+<a class="sourceLine" id="cb21-6" data-line-number="6">  <span class="kw">Sys.sleep</span>(<span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb21-7" data-line-number="7">}</a></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">articlelinks[<span class="dv">461</span><span class="op">:</span><span class="dv">469</span>] &lt;-<span class="st"> </span><span class="kw">read_html</span>(archivepages[[<span class="dv">47</span>]]) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb22-2" data-line-number="2"><span class="st">    </span><span class="kw">html_nodes</span>(<span class="st">&quot;.td_module_10 .td-module-title a&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">html_attr</span>(<span class="st">&quot;href&quot;</span>)</a>
+<a class="sourceLine" id="cb22-3" data-line-number="3"><span class="kw">head</span>(articlelinks)</a></code></pre></div>
+</div>
+<div id="downloading-all-the-article-pages" class="section level3">
+<h3>3. Downloading all the article pages</h3>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw">dir.create</span>(here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;downloaded_pages/articles&quot;</span>))</a>
+<a class="sourceLine" id="cb23-2" data-line-number="2"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">55</span><span class="op">:</span><span class="dv">149</span>) {</a>
+<a class="sourceLine" id="cb23-3" data-line-number="3">  <span class="kw">cat</span>(<span class="st">&quot;Iteration:&quot;</span>, i,<span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</a>
+<a class="sourceLine" id="cb23-4" data-line-number="4">  filepath2 &lt;-<span class="st"> </span>here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;downloaded_pages/articles&quot;</span>,<span class="kw">str_c</span>(<span class="st">&quot;page_&quot;</span>, i, <span class="st">&quot;.html&quot;</span>))</a>
+<a class="sourceLine" id="cb23-5" data-line-number="5">  <span class="kw">download.file</span>(articlelinks[[i]], filepath2)</a>
+<a class="sourceLine" id="cb23-6" data-line-number="6">  <span class="kw">Sys.sleep</span>(<span class="dv">2</span>) }</a>
+<a class="sourceLine" id="cb23-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb23-8" data-line-number="8">articlelinks[[<span class="dv">150</span>]] &lt;-<span class="st"> </span><span class="ot">NULL</span></a></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">150</span><span class="op">:</span><span class="dv">211</span>) {</a>
+<a class="sourceLine" id="cb24-2" data-line-number="2">  <span class="kw">cat</span>(<span class="st">&quot;Iteration:&quot;</span>, i,<span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</a>
+<a class="sourceLine" id="cb24-3" data-line-number="3">  filepath2 &lt;-<span class="st"> </span>here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;downloaded_pages/articles&quot;</span>,<span class="kw">str_c</span>(<span class="st">&quot;page_&quot;</span>, i, <span class="st">&quot;.html&quot;</span>))</a>
+<a class="sourceLine" id="cb24-4" data-line-number="4">  <span class="kw">download.file</span>(articlelinks[[i]], filepath2)</a>
+<a class="sourceLine" id="cb24-5" data-line-number="5">  <span class="kw">Sys.sleep</span>(<span class="dv">2</span>) }</a>
+<a class="sourceLine" id="cb24-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb24-7" data-line-number="7">articlelinks[[<span class="dv">212</span>]] &lt;-<span class="st"> </span><span class="ot">NULL</span></a></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">212</span><span class="op">:</span><span class="dv">417</span>) {</a>
+<a class="sourceLine" id="cb25-2" data-line-number="2">  <span class="kw">cat</span>(<span class="st">&quot;Iteration:&quot;</span>, i,<span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</a>
+<a class="sourceLine" id="cb25-3" data-line-number="3">  filepath2 &lt;-<span class="st"> </span>here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;downloaded_pages/articles&quot;</span>,<span class="kw">str_c</span>(<span class="st">&quot;page_&quot;</span>, i, <span class="st">&quot;.html&quot;</span>))</a>
+<a class="sourceLine" id="cb25-4" data-line-number="4">  <span class="kw">download.file</span>(articlelinks[[i]], filepath2)</a>
+<a class="sourceLine" id="cb25-5" data-line-number="5">  <span class="kw">Sys.sleep</span>(<span class="dv">2</span>) }</a>
+<a class="sourceLine" id="cb25-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb25-7" data-line-number="7">articlelinks[[<span class="dv">418</span>]] &lt;-<span class="st"> </span><span class="ot">NULL</span></a></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">418</span><span class="op">:</span><span class="dv">466</span>) {</a>
+<a class="sourceLine" id="cb26-2" data-line-number="2">  <span class="kw">cat</span>(<span class="st">&quot;Iteration:&quot;</span>, i,<span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</a>
+<a class="sourceLine" id="cb26-3" data-line-number="3">  filepath2 &lt;-<span class="st"> </span>here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;downloaded_pages/articles&quot;</span>,<span class="kw">str_c</span>(<span class="st">&quot;page_&quot;</span>, i, <span class="st">&quot;.html&quot;</span>))</a>
+<a class="sourceLine" id="cb26-4" data-line-number="4">  <span class="kw">download.file</span>(articlelinks[[i]], filepath2)</a>
+<a class="sourceLine" id="cb26-5" data-line-number="5">  <span class="kw">Sys.sleep</span>(<span class="dv">2</span>) }</a></code></pre></div>
+</div>
+<div id="scraping-the-text" class="section level3">
+<h3>4.Scraping the text</h3>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">text &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb27-2" data-line-number="2"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">466</span>) {</a>
+<a class="sourceLine" id="cb27-3" data-line-number="3">  <span class="kw">cat</span>(<span class="st">&quot;Iteration:&quot;</span>, i,<span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</a>
+<a class="sourceLine" id="cb27-4" data-line-number="4">  filepath3 &lt;-<span class="st"> </span>here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;downloaded_pages/articles&quot;</span>,<span class="kw">str_c</span>(<span class="st">&quot;page_&quot;</span>, i, <span class="st">&quot;.html&quot;</span>))</a>
+<a class="sourceLine" id="cb27-5" data-line-number="5">  text[[i]] &lt;-<span class="st"> </span><span class="kw">read_html</span>(filepath3) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb27-6" data-line-number="6"><span class="st">    </span><span class="kw">html_nodes</span>(<span class="st">&quot;p&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb27-7" data-line-number="7"><span class="st">    </span><span class="kw">html_text</span>() }</a></code></pre></div>
+</div>
 </div>
 <div id="point-6" class="section level2">
 <h2>Point 6</h2>
+<div id="what-is-crawling" class="section level3">
+<h3>What is crawling?</h3>
 <p>Crawling means looking at all the content and codes on a page, analyzing and downloading them. This can be done for different purposes, the main one being web indexing. A web spider is a program that automatically browses and downloads Web pages by following hyperlinks in a methodical and automated manner. They are usually used for web indexing, but can also be used for web scraping.</p>
+</div>
+<div id="building-a-spider-scraper" class="section level3">
+<h3>Building a spider scraper</h3>
+<p>The function we use to build the scraper spider is Rcrawler<br />
+Arguments: 1.Website: to idicate the website<br />
+2. Obeyrobots: if TRUE, the crawler will parse the website’s robots.txt file and obey its ruhow many processes will execute the taskles allowed and disallowed directories.<br />
+3. ExtractCSSPat: to extract one element per pattern for every page<br />
+4. ManyPerPattern: to extract multiple elements per pattern, we need to set ManyPerPattern = T<br />
+5. no_cores: specify how many processes will execute the task<br />
+6. no_conn: specify how many HTTP requests will be sent simultaneously (in parallel).</p>
+</div>
 </div>
 
 
