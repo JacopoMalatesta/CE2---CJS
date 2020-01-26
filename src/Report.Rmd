@@ -194,12 +194,12 @@ for (i in 1:5) {
 
 ## Point 5
 ### 1. Getting the links of 47 pages 
-```{r}
+```{r,eval = F}
 archivepages <-list()
 url2016 <- "https://www.beppegrillo.it/category/archivio/2016/"
 archivepages[[1]] <- url2016
 for (i in 1:45) {
-  cat("iteration_",i)
+  cat("iteration_",i,"\n")
   archivepages[[i+1]] <- read_html(archivepages[[i]]) %>% html_nodes(".last+ a") %>% html_attr("href") 
   Sys.sleep(2)
 }
@@ -211,7 +211,7 @@ archivepages[[47]] <- "https://www.beppegrillo.it/category/archivio/2016/page/47
 ```
 
 ### 2. Getting all the articles links on 47 pages
-```{r}
+```{r,eval = F}
 articlelinks <- list()
 for (i in 1:46) {
   cat("iteration_",i)
@@ -228,7 +228,7 @@ head(articlelinks)
 ```
 
 ### 3. Downloading all the article pages
-```{r}
+```{r,eval = F}
 dir.create(here::here("downloaded_pages/articles"))
 for (i in 1:149) {
   cat("Iteration:", i,"\n")
@@ -263,7 +263,7 @@ for (i in 420:466) {
 
 ### 4.Scraping the text
 
-```{r}
+```{r,eval = F}
 text <- list()
 for (i in 1:466) {
   cat("Iteration:", i,"\n")
