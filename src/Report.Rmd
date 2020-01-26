@@ -10,13 +10,13 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 ```
 
 ## Loading the packages
 
-```{r}
-library(RCurl); library(rvest); library(tidyverse); library(stringr)
+```{r,message=FALSE}
+library(RCurl); library(rvest); library(tidyverse); library(stringr);
 
 ```
 
@@ -70,19 +70,18 @@ writeLines(page,
 Downloading all the links in the page 
 
 ```{r}
-links <- XML::getHTMLLinks(url)
-links
+links <- XML::getHTMLLinks( here::here("downloaded_pages","beppe_grillo_plastica.html"))
 
 ```
 
-Creating a tibble with all the links
+Creating a tibble to store all the links
 
 ```{r}
 dat <- tibble(
   links = links
 )
 
-dat
+head(dat)
 
 ```
 
@@ -100,7 +99,7 @@ dat2 <- tibble(
   links = internal_links
 )
 
-dat2
+head(dat2)
 
 ```
 
@@ -112,9 +111,6 @@ links_rvest <- read_html(here::here("downloaded_pages", "beppe_grillo_plastica.h
   html_nodes(css = "a") %>% 
   html_attr("href")
 
-links_rvest
-
-
 ```
 
 
@@ -125,7 +121,7 @@ dat3 <- tibble(
   links = links_rvest
 )
 
-dat3
+head(dat3)
 
 ```
 
@@ -134,7 +130,6 @@ Selecting all the links re-directing to other posts from the beppegrillo.it blog
 
 ```{r}
 internal_links_rvest <- str_subset(links, "^http://www\\.beppegrillo\\.it")
-internal_links_rvest
 
 ```
 
@@ -145,7 +140,7 @@ dat4 <- tibble(
   links = internal_links_rvest
 )
 
-dat4
+head(dat4)
 ```
 
 
