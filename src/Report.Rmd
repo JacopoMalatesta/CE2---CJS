@@ -168,29 +168,33 @@ articolo
 1. First, creating a loop to get the previous links and following links. The times of iteration are based on
 how many previous and following articles you'd like to scrape.
 For example, we set "http://www.beppegrillo.it/un-mare-di-plastica-ci-sommergera/" as our initial page, and we want to
-scrape 4 following pages:
+scrape 4 following pages:    
+all_prossimo_links <-vector(mode = "character", length = 5)    
+dir.create(here::here("downloaded_pages/prossimo articolo"))    
+all_prossimo_links [[1]] <- "http://www.beppegrillo.it/un-mare-di-plastica-ci-sommergera/"      
+for (i in 1:4) {   
+  all_prossimo_links[[i+1]] <- read_html(all_prossimo_links[i]) %>% html_nodes(".td-post-next-post a") %>%     html_attr("href")     
+  Sys.sleep(2)    
+}    
 
-all_prossimo_links <-vector(mode = "character", length = 5)
-dir.create(here::here("downloaded_pages/prossimo articolo"))
-all_prossimo_links [[1]] <- url
-for (i in 1:4) {
-  all_prossimo_links[[i+1]] <- read_html(all_prossimo_links[i]) %>% html_nodes(".td-post-next-post a") %>% html_attr("href") 
-  Sys.sleep(2)
-}
+
+2. Downloading the pages and scraping the text     
+article_description <-list()    
+for (i in 1:5) {       
+  file_path <- here::here("downloaded_pages/prossimo articolo",str_c("article_", i, ".html"))       
+  download.file(all_prossimo_link[[i]],destfile =file_path)     
+  article_description[[i]] <- read_html(file_path) %>%       
+    html_nodes("p") %>%           
+    html_text()         
+  Sys.sleep(2)       
+}       
+
+3. Scraping the previous links and articles is the same, just to replace the css path in the first with ".td-post-next-prev-content a" 
 
 
-2. Downloading the pages and scraping the text 
-article_description <-list()
-for (i in 1:5) {  
-  file_path <- here::here("articles",str_c("article_", i, ".html"))
-  download.file(all_prossimo_link[[i]],destfile =file_path)
-  article_description[[i]] <- read_html(file_path) %>% 
-    html_nodes("p") %>% 
-    html_text() 
-  Sys.sleep(2)
-}  
+## Point 5
 
-3. Scraping the previous links and articles is the same, just to replace the css path in the first with ".td-post-next-prev-content a"  
+
 
 
 
