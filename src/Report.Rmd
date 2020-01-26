@@ -193,10 +193,85 @@ for (i in 1:5) {
 
 
 ## Point 5
+### 1. Getting the links of 47 pages 
+```{r}
+archivepages <-list()
+url2016 <- "https://www.beppegrillo.it/category/archivio/2016/"
+archivepages[[1]] <- url2016
+for (i in 1:45) {
+  cat("iteration_",i)
+  archivepages[[i+1]] <- read_html(archivepages[[i]]) %>% html_nodes(".last+ a") %>% html_attr("href") 
+  Sys.sleep(2)
+}
+```
 
+The css path of "next page" on the 46th page is different, so archivepages[[47]] is empty, we repalce it with the right URL
+```{r}
+archivepages[[47]] <- "https://www.beppegrillo.it/category/archivio/2016/page/47/"
+```
 
+### 2. Getting all the articles links on 47 pages
+```{r}
+articlelinks <- list()
+for (i in 1:46) {
+  cat("iteration_",i)
+  articlelinks[(1+(i-1)*10):(i*10)] <- read_html(archivepages[[i]]) %>%
+    html_nodes(".td_module_10 .td-module-title a") %>% html_attr("href") 
+  Sys.sleep(2)
+}
+```
 
+```{r}
+articlelinks[461:469] <- read_html(archivepages[[47]]) %>%
+    html_nodes(".td_module_10 .td-module-title a") %>% html_attr("href")
+head(articlelinks)
+```
 
+### 3. Downloading all the article pages
+```{r}
+dir.create(here::here("downloaded_pages/articles"))
+for (i in 1:149) {
+  cat("Iteration:", i,"\n")
+  filepath2 <- here::here("downloaded_pages/articles",str_c("page_", i, ".html"))
+  download.file(articlelinks[[i]], filepath2)
+  Sys.sleep(2) }
+
+articlelinks[[150]] <- NULL
+
+for (i in 150:212) {
+  cat("Iteration:", i,"\n")
+  filepath2 <- here::here("downloaded_pages/articles",str_c("page_", i, ".html"))
+  download.file(articlelinks[[i]], filepath2)
+  Sys.sleep(2) }
+
+articlelinks[[213]] <- NULL
+
+for (i in 213:419) {
+  cat("Iteration:", i,"\n")
+  filepath2 <- here::here("articles",str_c("page_", i, ".html"))
+  download.file(articlelinks[[i]], filepath2)
+  Sys.sleep(2) }
+
+articlelinks[[420]] <- NULL
+
+for (i in 420:466) {
+  cat("Iteration:", i,"\n")
+  filepath2 <- here::here("articles",str_c("page_", i, ".html"))
+  download.file(articlelinks[[i]], filepath2)
+  Sys.sleep(2) }
+```
+
+### 4.Scraping the text
+
+```{r}
+text <- list()
+for (i in 1:466) {
+  cat("Iteration:", i,"\n")
+  filepath3 <- here::here("articles",str_c("page_", i, ".html"))
+  text[[i]] <- read_html(filepath3) %>%
+    html_nodes("p") %>% 
+    html_text() }
+```
 
 
 ## Point 6
