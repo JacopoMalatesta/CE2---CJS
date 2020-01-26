@@ -100,7 +100,7 @@ dat4
 
 # Point 4 ----------------------------------------------------------------------------------------------------------------
 # Scraping the link of "prossimo articolo"
-prossimo_link <- read_html("beppegrillo.html") %>% 
+prossimo_link <- read_html(here::here("downloaded_pages", "beppe_grillo_plastica.html")) %>% 
   html_nodes(".td-post-next-post a") %>% html_attr("href") 
 # Downloading the page of following article
 download.file(prossimo_link,destfile = here::here("downloaded_pages", "prossimo_articolo"))
