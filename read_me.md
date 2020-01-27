@@ -1,6 +1,6 @@
 # Read me
 
-## Folder structure
+## Folder structure description
 
 Folder name | Content
 ------------ | -------------
