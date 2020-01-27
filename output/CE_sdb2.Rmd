@@ -2,11 +2,15 @@
 title: "CE2 - sdb trial"
 author: "simone de battisti"
 output:
-  html_document:
-    df_print: paged
+    html_document:
+    toc: true
+    theme: spacelab
+    highlight: pygments
 ---
 
-# 1 wwww.beppegrillo.it Inspect the robot.txt and describe what you can and what you should not do. Pay attention to the allow / disallow statements and the definition of user-agent. What do these lines mean?
+##code and esplanations for CE2 - as much as i could - by myself
+
+# 1 www.beppegrillo.it Inspect the robot.txt and describe what you can and what you should not do. Pay attention to the allow / disallow statements and the definition of user-agent. What do these lines mean?
 
 ```r
 
@@ -35,7 +39,8 @@ The file leaves pretty open access for downloading and scraping. not particular 
 Use URLencode() to avoid potential problems with formatting the URL.
 
 ```{r}
-library(RCurl);
+library(RCurl)
+library(stringr)
 
 
 url_plastica <- URLencode("http://www.beppegrillo.it/un-mare-di-plastica-ci-sommergera")
@@ -74,7 +79,7 @@ plastica_cont
 ```
 
 
-#Create a data frame with all the HTML links in the page using the XML::getHTMLLinks(). Then, use a regex to keep only those links that re-direct to other posts of the beppegrillo.it blog (so remove all other links). Finally, achieve the same result using rvest:: instead of XML.
+#3 Create a data frame with all the HTML links in the page using the XML::getHTMLLinks(). Then, use a regex to keep only those links that re-direct to other posts of the beppegrillo.it blog (so remove all other links). Finally, achieve the same result using rvest:: instead of XML.
 
 
 I searched in the helper as i could not find this funtion used in class. then i tried the class version but uinsucessfully (cant really find the attr)
@@ -83,10 +88,12 @@ so hard to scrape using a lopp even if the master doesnt work.
 
 
 ```{r}
+library (XML)
+library (xml2)
+library (rvest)
 
-
-getHTMLLinks(here::here (/download/plastica.html), externalOnly = TRUE, xpQuery = "//a/@href",
-               baseURL = plastica.html, relative = FALSE)
+#getHTMLLinks(here::here (/download/plastica.html), externalOnly = TRUE, xpQuery ="//a/@href",
+ #              baseURL = plastica.html, relative = FALSE)
 
 # Tried this also unsucessfully
 # links <- read_html(here::here("/download/plastica_get.html")) %>%
@@ -95,23 +102,26 @@ getHTMLLinks(here::here (/download/plastica.html), externalOnly = TRUE, xpQuery 
 # links
 
 
-#maybe depends on the html file saved?
 
-links <- read_html(here::here("/download/plastica_get.html")) %>%
-html_nodes(css = "span a") %>% 
-html_attr('href')    
-links
+#links <- read_html(here::here("/download/plastica_get.html")) %>%
+#html_nodes(css = "span a") %>% 
+#html_attr('href')    
+#links
 
 ```
 
 
 #4 Go back to the initial link and focus on the bottom of the page: "Prossimo articolo" it means following article. Scrape this link and then use it to scrape the article "In Svizzera il tragitto casa-ufficio è orario di lavoro” (i.e. the following page). How could you use these previous and following links to scrape many more blog posts? [don’t do it, just sketch the ideas and the R functions you should use]
 
-
+```{r}
 links_prossimoarticolo <- read_html(here::here("/download/plastica_get.html")) %>%
-html_nodes(css = ".td-post-next-post a") %>% 
-html_attr('href') 
-links
+ html_nodes(css = ".td-post-next-post a") %>% 
+ html_attr('href')
+
+links_prossimoarticolo
+```
+
+...missing
 
 
 
@@ -126,6 +136,7 @@ per non disturbare troppo prima scarichiamo la pagina
 ```r
 url_5 <- "http://www.beppegrillo.it/category/archivio/2016"
 
+
 browseURL(url_5)
 
 
@@ -139,6 +150,15 @@ texturl5
 
 
 
+```
+
+#from here i was not able to go much ahead, need more time to revise
+
+
+# 6 What is crawling?
+we should rember that the web is made of connections (by definition); pages that remind to other pages and so on. within each pages there are informations (once they were tags) about the page content and... another relevance index of each page is the numer (weighted by importance) links that converge to it from other web pages.
+the web is huge and keeps on growing.
+the crawlers are bots that make a big job, moving thru all the links connections trying to count the relervance of each page (on the good side) on the (bad) side they could also take informations from the pages and remind them to the "sender". some crawlers are prorpeitary, some others are open socurce and could be used.
 
 
 
