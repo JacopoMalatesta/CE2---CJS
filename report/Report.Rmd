@@ -189,7 +189,7 @@ for (i in 1:5) {
   Sys.sleep(2)       
 }       
 ```
-3. Scraping the previous links and articles is the same, just to replace the css path in the first with ".td-post-next-prev-content a" 
+3. Scraping the previous links and articles is the same, just to replace the css path in the first loop with ".td-post-next-prev-content a" 
 
 
 ## Point 5
@@ -205,7 +205,7 @@ for (i in 1:45) {
 }
 ```
 
-The css path of "next page" on the 46th page is different, so archivepages[[47]] is empty, we repalce it with the right URL
+The css path of "next page" on the 46th page is different, so we set archivepages[[47]] manually
 ```{r}
 archivepages[[47]] <- "https://www.beppegrillo.it/category/archivio/2016/page/47/"
 ```
@@ -230,7 +230,7 @@ head(articlelinks)
 ### 3. Downloading all the article pages
 ```{r}
 dir.create(here::here("downloaded_pages/articles"))
-for (i in 55:149) {
+for (i in 1:149) {
   cat("Iteration:", i,"\n")
   filepath2 <- here::here("downloaded_pages/articles",str_c("page_", i, ".html"))
   download.file(articlelinks[[i]], filepath2)
@@ -287,7 +287,7 @@ different purposes, the main one being web indexing. A web spider is a program t
 can also be used for web scraping. 
 
 ### Building a spider scraper
-The function we use to build the scraper spider is Rcrawler   
+The function we use to build the scraper spider is Rcrawler()        
 Arguments: 1.Website: to idicate the website   
 2. Obeyrobots: if TRUE, the crawler will parse the website’s robots.txt file and obey its ruhow many processes will execute the taskles allowed and disallowed directories.   
 3. ExtractCSSPat: to extract one element per pattern for every page       
