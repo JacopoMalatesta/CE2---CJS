@@ -570,7 +570,7 @@ summary {
 <a class="sourceLine" id="cb18-8" data-line-number="8">  <span class="kw">Sys.sleep</span>(<span class="dv">2</span>)       </a>
 <a class="sourceLine" id="cb18-9" data-line-number="9">}       </a></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
-<li>Scraping the previous links and articles is the same, just to replace the css path in the first with “.td-post-next-prev-content a”</li>
+<li>Scraping the previous links and articles is the same, just to replace the css path in the first loop with “.td-post-next-prev-content a”</li>
 </ol>
 </div>
 </div>
@@ -586,7 +586,7 @@ summary {
 <a class="sourceLine" id="cb19-6" data-line-number="6">  archivepages[[i<span class="op">+</span><span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw">read_html</span>(archivepages[[i]]) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">html_nodes</span>(<span class="st">&quot;.last+ a&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">html_attr</span>(<span class="st">&quot;href&quot;</span>) </a>
 <a class="sourceLine" id="cb19-7" data-line-number="7">  <span class="kw">Sys.sleep</span>(<span class="dv">2</span>)</a>
 <a class="sourceLine" id="cb19-8" data-line-number="8">}</a></code></pre></div>
-<p>The css path of “next page” on the 46th page is different, so archivepages[[47]] is empty, we repalce it with the right URL</p>
+<p>The css path of “next page” on the 46th page is different, so we set archivepages[[47]] manually</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">archivepages[[<span class="dv">47</span>]] &lt;-<span class="st"> &quot;https://www.beppegrillo.it/category/archivio/2016/page/47/&quot;</span></a></code></pre></div>
 </div>
 <div id="getting-all-the-articles-links-on-47-pages" class="section level3">
@@ -605,7 +605,7 @@ summary {
 <div id="downloading-all-the-article-pages" class="section level3">
 <h3>3. Downloading all the article pages</h3>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw">dir.create</span>(here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;downloaded_pages/articles&quot;</span>))</a>
-<a class="sourceLine" id="cb23-2" data-line-number="2"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">55</span><span class="op">:</span><span class="dv">149</span>) {</a>
+<a class="sourceLine" id="cb23-2" data-line-number="2"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">149</span>) {</a>
 <a class="sourceLine" id="cb23-3" data-line-number="3">  <span class="kw">cat</span>(<span class="st">&quot;Iteration:&quot;</span>, i,<span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</a>
 <a class="sourceLine" id="cb23-4" data-line-number="4">  filepath2 &lt;-<span class="st"> </span>here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;downloaded_pages/articles&quot;</span>,<span class="kw">str_c</span>(<span class="st">&quot;page_&quot;</span>, i, <span class="st">&quot;.html&quot;</span>))</a>
 <a class="sourceLine" id="cb23-5" data-line-number="5">  <span class="kw">download.file</span>(articlelinks[[i]], filepath2)</a>
@@ -651,7 +651,7 @@ summary {
 </div>
 <div id="building-a-spider-scraper" class="section level3">
 <h3>Building a spider scraper</h3>
-<p>The function we use to build the scraper spider is Rcrawler<br />
+<p>The function we use to build the scraper spider is Rcrawler()<br />
 Arguments: 1.Website: to idicate the website<br />
 2. Obeyrobots: if TRUE, the crawler will parse the website’s robots.txt file and obey its ruhow many processes will execute the taskles allowed and disallowed directories.<br />
 3. ExtractCSSPat: to extract one element per pattern for every page<br />
